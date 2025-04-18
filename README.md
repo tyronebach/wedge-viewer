@@ -4,6 +4,10 @@ A simple **wedge viewer** for browsing 1D, 2D or 3D grids of images.
 
 Images are laid out along the **X** axis (side‑by‑side), and you can step through **Y** and **Z** dimensions with sliders or keyboard shortcuts.
 
+# Demo
+
+http://34.30.161.139/
+
 ## Features
 
 - **Static Express server** that serves:
@@ -99,14 +103,17 @@ fs.writeFileSync(filePath,  Buffer.from(encode(chunks)));
 
 Note: you can inject any other data as well—just extend the object.
 
-# Install dependencies
+# Install dependencies (once)
 
 npm install
 
-# Then Build the frontend and Start the server
+# Then build and deploy the frontend (once)
 
 npm build
 npm deploy
+
+# Start the server
+
 npm start
 
 # Or Start both server and client in dev mode
