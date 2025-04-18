@@ -60,48 +60,42 @@ You can inject **one** JSON object into each PNG under the `tEXt` chunk `"wedged
 ### Example metadata object
 
 ```json
-
 {
-"x_label": "LoRA",
-"y_label": "Stage",
-"z_label": "Strength",
-"x_axis": ["modelA","modelB","modelC"],
-"y_axis": ["base","upscale","inpaint"],
-"z_axis": [0.2,0.5,1.0],
-"x_value": "modelB",
-"y_value": "upscale",
-"z_value": 0.5,
-"injectedPrompt": "a beautiful portrait",
-"seed": 123456789
+	"x_label": "LoRA",
+	"y_label": "Stage",
+	"z_label": "Strength",
+	"x_axis": ["modelA", "modelB", "modelC"],
+	"y_axis": ["base", "upscale", "inpaint"],
+	"z_axis": [0.2, 0.5, 1.0],
+	"x_value": "modelB",
+	"y_value": "upscale",
+	"z_value": 0.5,
+	"injectedPrompt": "a beautiful portrait",
+	"seed": 123456789
 }
-
-
-
-
+```
 
 ### Sample injection snippet (Node.js)
 
+```js
 import fs from 'fs';
 import extract from 'png-chunks-extract';
 import encode from 'png-chunks-encode';
-import { encode  as  encodeText,  decode  as  decodeText } from 'png-chunk-text';
+import { encode as encodeText, decode as decodeText } from 'png-chunk-text';
 
 export function embedJsonMeta(filePath, jsonObject) {
-const  buffer  =  fs.readFileSync(filePath);
-const  chunks  =  extract(buffer)
-// drop any existing wedgedata chunk
-.filter(ch  =>  !(ch.name==='tEXt'  &&  decodeText(ch).keyword==='wedgedata'));
-const  jsonStr  =  JSON.stringify(jsonObject);
-const  wedgedataChunk  =  encodeText('wedgedata',  jsonStr);
-// insert immediately after IHDR
-const  ihdrIdx  =  chunks.findIndex(c  =>  c.name==='IHDR');
-if  (ihdrIdx<0)  throw  new  Error('PNG  missing  IHDR');
-	chunks.splice(ihdrIdx+1,  0,  wedgedataChunk);
-fs.writeFileSync(filePath,  Buffer.from(encode(chunks)));
+	const buffer = fs.readFileSync(filePath);
+	const chunks = extract(buffer)
+		// drop any existing wedgedata chunk
+		.filter((ch) => !(ch.name === 'tEXt' && decodeText(ch).keyword === 'wedgedata'));
+	const jsonStr = JSON.stringify(jsonObject);
+	const wedgedataChunk = encodeText('wedgedata', jsonStr);
+	// insert immediately after IHDR
+	const ihdrIdx = chunks.findIndex((c) => c.name === 'IHDR');
+	if (ihdrIdx < 0) throw new Error('PNG  missing  IHDR');
+	chunks.splice(ihdrIdx + 1, 0, wedgedataChunk);
+	fs.writeFileSync(filePath, Buffer.from(encode(chunks)));
 }
-
-
-
 ```
 
 Note: you can inject any other data as well—just extend the object.
