@@ -6,7 +6,7 @@ Images are laid out along the **X** axis (side‑by‑side), and you can step th
 
 # Demo
 
-http://34.30.161.139/
+https://wedge-viewer.onrender.com/
 
 - page up down to cycle through folders (since its over network the images need time to load)
 - keyboard shortcuts: up, down, left, right, home, end (click the help button)
@@ -108,18 +108,12 @@ Note: you can inject any other data as well—just extend the object.
 npm install
 ```
 
-# Then build and deploy the frontend (once)
-
-```
-npm build
-npm deploy
-```
-
 # Start the server
 
 ```
 npm start
 ```
+that's it, click the address printed in the terminal. Place image folders inside public/images . live updated 
 
 # Or Start both server and client in dev mode
 
