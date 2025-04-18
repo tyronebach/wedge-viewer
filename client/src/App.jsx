@@ -1,40 +1,35 @@
-// src/App.jsx
 import { useEffect, useState, useCallback, useRef } from 'react';
-import ImageViewer from './components/ImageViewer';
-import './style.css';
-import HelpModal from './components/HelpModal';
 import ControlsPanel from './components/ControlsPanel';
+import HelpModal from './components/HelpModal';
+import ImageViewer from './components/ImageViewer';
 import WedgeMap from './components/WedgeMap';
 import { FaRegWindowRestore } from 'react-icons/fa';
+import './style.css';
 
 const pad = (n) => n.toString().padStart(5, '0');
 
 export default function App() {
+	// ─── State ─────────────────────────────────────────────────
 	const [folders, setFolders] = useState([]);
 	const [current, setCurrent] = useState('');
 
-	// stats will now be { x: {min,max}, y?: {...}, z?: {...} }
 	const [stats, setStats] = useState(null);
 	const [mapping, setMapping] = useState({});
 	const [xMin, setXMin] = useState(0);
 
-	// sliders for up to 3 dims
 	const [x, setX] = useState(1);
 	const [y, setY] = useState(1);
 	const [z, setZ] = useState(1);
 
-	// URLs for left/center/right on the X‑axis
 	const [srcs, setSrcs] = useState({ before: '', selected: '', after: '' });
 
-	// ⬇️ NEW: UI state
 	const [minimized, setMinimized] = useState(false);
 	const [showHelp, setShowHelp] = useState(false);
 
-	// image‑level metadata
 	const [pngMeta, setPngMeta] = useState(null);
 	const lastMetaRequest = useRef({ folder: null, filename: null });
 
-	// 1) load folders
+	// ─── 1) Load folder list ───────────────────────────────────────
 	useEffect(() => {
 		fetch('/api/folders')
 			.then((r) => r.json())
@@ -45,112 +40,123 @@ export default function App() {
 			.catch(console.error);
 	}, []);
 
-	// 2) when folder changes, fetch stats & reset sliders
+	// ─── 2) Folder change ─────────────────────────────────────────
 	useEffect(() => {
 		if (!current) return;
+
+		// clear everything
+		setStats(null);
+		setMapping({});
+		setPngMeta(null);
+		setSrcs({ before: '', selected: '', after: '' });
+		lastMetaRequest.current = { folder: null, filename: null };
+
+		// fetch stats
 		fetch(`/api/folderStats?folder=${current}`)
 			.then((r) => r.json())
 			.then((s) => {
 				setStats(s);
-				// initialize each dim to its min (or 1 for missing dims)
 				setX(s.x.min);
 				setXMin(s.x.min);
 				setY(s.y?.min ?? 1);
 				setZ(s.z?.min ?? 1);
 			})
 			.catch(console.error);
-
-		setMapping({});
-		setPngMeta(null);
-		lastMetaRequest.current = { folder: null, filename: null };
 	}, [current]);
 
-	// 3) fetch filenames & build map key→filename
+	// ─── 3) File mapping ──────────────────────────────────────────
 	useEffect(() => {
 		if (!current || !stats) return;
+
 		fetch(`/api/folderFiles?folder=${current}`)
 			.then((r) => r.json())
 			.then((files) => {
 				const m = {};
 				files.forEach((fn) => {
-					// 1) strip .png and trailing underscores
 					const base = fn.replace(/\.png$/i, '').replace(/_+$/, '');
-					// 2) split on underscores
 					const parts = base.split('_');
-					// 3) take the last up to 3 parts, convert to numbers
 					const nums = parts
-						.slice(-3) // ["0004","0008","0002"] for 3D, or fewer
+						.slice(-3)
 						.map((p) => parseInt(p, 10))
 						.filter((n) => !isNaN(n));
 
 					if (stats.z && nums.length === 3) {
-						// 3D: X, Y, Z
 						const [X, Y, Z] = nums;
 						m[`${pad(X)}_${pad(Y)}_${pad(Z)}`] = fn;
 					} else if (stats.y && nums.length >= 2) {
-						// 2D: X, Y
 						const [X, Y] = nums;
 						m[`${pad(X)}_${pad(Y)}`] = fn;
 					} else if (nums.length >= 1) {
-						// 1D: X only
 						const [X] = nums;
 						m[pad(X)] = fn;
 					}
-					// else: weird name, skip
 				});
 				setMapping(m);
 			})
 			.catch(console.error);
 	}, [current, stats]);
 
-	// 4) compute before/selected/after along X
+	// ─── 4) Compute before/selected/after ─────────────────────────
 	const updateSrcs = useCallback(() => {
-		if (!stats) return;
-		const actualX = xMin + x - 1;
+		if (!stats) {
+			setSrcs({ before: '', selected: '', after: '' });
+			return;
+		}
 
-		let selKey, beforeKey, afterKey;
+		const actualX = xMin + x - 1;
+		let selKey, befKey, aftKey;
+
 		if (stats.z) {
 			selKey = `${pad(actualX)}_${pad(y)}_${pad(z)}`;
-			beforeKey = `${pad(actualX - 1)}_${pad(y)}_${pad(z)}`;
-			afterKey = `${pad(actualX + 1)}_${pad(y)}_${pad(z)}`;
+			befKey = `${pad(actualX - 1)}_${pad(y)}_${pad(z)}`;
+			aftKey = `${pad(actualX + 1)}_${pad(y)}_${pad(z)}`;
 		} else if (stats.y) {
 			selKey = `${pad(actualX)}_${pad(y)}`;
-			beforeKey = `${pad(actualX - 1)}_${pad(y)}`;
-			afterKey = `${pad(actualX + 1)}_${pad(y)}`;
+			befKey = `${pad(actualX - 1)}_${pad(y)}`;
+			aftKey = `${pad(actualX + 1)}_${pad(y)}`;
 		} else {
 			selKey = pad(actualX);
-			beforeKey = pad(actualX - 1);
-			afterKey = pad(actualX + 1);
+			befKey = pad(actualX - 1);
+			aftKey = pad(actualX + 1);
+		}
+
+		// if the selected key isn’t in our map, clear out
+		if (!mapping[selKey]) {
+			setSrcs({ before: '', selected: '', after: '' });
+			return;
 		}
 
 		const base = `/images/${current}`;
 		setSrcs({
-			before: mapping[beforeKey] ? `${base}/${mapping[beforeKey]}` : `${base}/${mapping[selKey]}`,
-			selected: mapping[selKey] ? `${base}/${mapping[selKey]}` : '',
-			after: mapping[afterKey] ? `${base}/${mapping[afterKey]}` : `${base}/${mapping[selKey]}`,
+			before: mapping[befKey] ? `${base}/${mapping[befKey]}` : `${base}/${mapping[selKey]}`,
+			selected: `${base}/${mapping[selKey]}`,
+			after: mapping[aftKey] ? `${base}/${mapping[aftKey]}` : `${base}/${mapping[selKey]}`,
 		});
 	}, [x, y, z, xMin, mapping, stats, current]);
+
 	useEffect(updateSrcs, [updateSrcs]);
 
-	// 5) fetch image‑level metadata when selected changes
+	// ─── 5) Fetch image‑level metadata ────────────────────────────
 	useEffect(() => {
-		const src = srcs.selected;
-		if (!src) {
+		if (!srcs.selected) {
 			setPngMeta(null);
 			lastMetaRequest.current = { folder: null, filename: null };
 			return;
 		}
 		try {
-			const url = new URL(src, window.location.origin);
-			const [, imagesSeg, folder, filename] = url.pathname.split('/');
-			if (imagesSeg !== 'images' || !folder || !filename) throw 0;
-
-			const last = lastMetaRequest.current;
-			if (last.folder === folder && last.filename === filename) return;
+			const url = new URL(srcs.selected, window.location.origin);
+			const [, , folder, filename] = url.pathname.split('/');
+			if (lastMetaRequest.current.folder === folder && lastMetaRequest.current.filename === filename) {
+				return;
+			}
 			lastMetaRequest.current = { folder, filename };
 
 			fetch(`/api/imageMeta?folder=${folder}&filename=${filename}`)
-				.then((r) => r.json())
+				.then((r) => {
+					if (r.status === 404) return {};
+					if (!r.ok) throw new Error(r.status);
+					return r.json();
+				})
 				.then(setPngMeta)
 				.catch(() => setPngMeta(null));
 		} catch {
@@ -158,85 +164,74 @@ export default function App() {
 		}
 	}, [srcs.selected]);
 
-	// 6) keyboard navigation
+	// ─── 6) Keyboard navigation ────────────────────────────────────
 	useEffect(() => {
 		const onKey = (e) => {
 			if (!stats) return;
 			let handled = false;
-
 			switch (e.key) {
-				// ─── Y axis ────────────────────────────────────────
+				// Y: ↑↓ or W/S
 				case 'ArrowUp':
 				case 'w':
 					if (stats.y) {
-						setY((y) => Math.min(y + 1, stats.y.max));
+						setY((v) => Math.min(v + 1, stats.y.max));
 						handled = true;
 					}
 					break;
 				case 'ArrowDown':
 				case 's':
 					if (stats.y) {
-						setY((y) => Math.max(y - 1, stats.y.min));
+						setY((v) => Math.max(v - 1, stats.y.min));
 						handled = true;
 					}
 					break;
-
-				// ─── X axis ────────────────────────────────────────
+				// X: ←→ or A/D
 				case 'ArrowRight':
 				case 'd':
-					setX((c) => Math.min(c + 1, stats.x.max - stats.x.min + 1));
+					setX((v) => Math.min(v + 1, stats.x.max - stats.x.min + 1));
 					handled = true;
 					break;
 				case 'ArrowLeft':
 				case 'a':
-					setX((c) => Math.max(c - 1, 1));
+					setX((v) => Math.max(v - 1, 1));
 					handled = true;
 					break;
-
-				// ─── Z axis ────────────────────────────────────────
-				case 'e':
+				// Z: Home/End or Q/E
 				case 'Home':
+				case 'e':
 					if (stats.z) {
-						setZ((z) => Math.min(z + 1, stats.z.max));
+						setZ((v) => Math.min(v + 1, stats.z.max));
 						handled = true;
 					}
 					break;
-				case 'q':
 				case 'End':
+				case 'q':
 					if (stats.z) {
-						setZ((z) => Math.max(z - 1, stats.z.min));
+						setZ((v) => Math.max(v - 1, stats.z.min));
 						handled = true;
 					}
 					break;
-
-				// ─── folder nav ────────────────────────────────────
+				// folders: PgUp/PgDn
 				case 'PageUp':
 					setCurrent((_, i = folders.findIndex((f) => f === current)) => folders[Math.max(i - 1, 0)]);
 					handled = true;
 					break;
-
 				case 'PageDown':
 					setCurrent((_, i = folders.findIndex((f) => f === current)) => folders[Math.min(i + 1, folders.length - 1)]);
 					handled = true;
 					break;
 			}
-
-			if (handled) {
-				e.preventDefault();
-			}
+			if (handled) e.preventDefault();
 		};
-
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
 	}, [stats, folders, current]);
 
-	// build an ordered list of dims [ x, y?, z? ]
+	// ─── Overlay items ────────────────────────────────────────────
 	const overlayItems = [];
 	['x', 'y', 'z'].forEach((dim) => {
-		const stat = stats?.[dim];
-		if (!stat) return; // skip y or z if they don’t exist
+		if (!stats?.[dim]) return;
 		const label = pngMeta?.wedgeData?.[`${dim}_label`] ?? dim.toUpperCase();
-		// pick the injected value if it exists, otherwise use the slider state
 		const fallback = dim === 'x' ? x : dim === 'y' ? y : z;
 		const value = pngMeta?.wedgeData?.[`${dim}_value`] ?? fallback;
 		overlayItems.push({ label, value });
@@ -250,11 +245,11 @@ export default function App() {
 	const yValue = pngMeta?.wedgeData?.y_value ?? y;
 	const zValue = pngMeta?.wedgeData?.z_value ?? z;
 
+	// ─── Render ─────────────────────────────────────────────────
 	return (
 		<div className="container">
-			{/* HELP */}
 			{showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
-			{/* CONTROLS */}+{' '}
+
 			{!minimized ? (
 				<ControlsPanel
 					folders={folders}
@@ -283,6 +278,7 @@ export default function App() {
 					</button>
 				</div>
 			)}
+
 			<ImageViewer before={srcs.before} selected={srcs.selected} after={srcs.after} overlayItems={overlayItems} pngMeta={pngMeta} />
 			<WedgeMap stats={stats} x={x} xMin={xMin} y={y} z={z} />
 		</div>

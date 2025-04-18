@@ -101,8 +101,18 @@ app.get('/api/imageMeta', async (req, res) => {
 	if (!folder || !filename) {
 		return res.status(400).json({ error: 'folder and filename are required' });
 	}
+
 	const fullPath = path.join(imagesRoot, folder, filename);
 
+	// 6a) guard against missing file
+	try {
+		await fs.access(fullPath);
+	} catch {
+		// no such file → still return 200 but with no metadata
+		return res.json({});
+	}
+
+	// 6b) actually read out the PNG metadata
 	try {
 		const meta = await sharp(fullPath).metadata();
 		const comments = Array.isArray(meta.comments) ? meta.comments : [];
@@ -124,7 +134,7 @@ app.get('/api/imageMeta', async (req, res) => {
 			}
 		}
 
-		res.json({
+		return res.json({
 			width: meta.width,
 			height: meta.height,
 			format: meta.format,
@@ -134,7 +144,7 @@ app.get('/api/imageMeta', async (req, res) => {
 		});
 	} catch (err) {
 		console.error('Error reading image metadata:', err);
-		res.status(500).json({ error: 'Failed to read image metadata' });
+		return res.status(500).json({ error: 'Failed to read image metadata' });
 	}
 });
 

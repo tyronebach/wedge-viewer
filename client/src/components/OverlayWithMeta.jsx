@@ -31,9 +31,32 @@ export default function OverlayWithMeta({ overlayItems, pngMeta }) {
 					{/* if wedgeData exists */}
 					{pngMeta.wedgeData && (
 						<div className="wedge-data-section">
-							<h3> InjectedPrompt:</h3>
-							<p>{pngMeta.wedgeData.injectedPrompt}</p>
+							{/* Injected Prompt (optional) */}
 
+							{/* Generation Time (optional) */}
+							{pngMeta.wedgeData.generate_time && (
+								<div className="wedge-field">
+									<h3>Generation Time</h3>
+									<p>{pngMeta.wedgeData.generate_time}</p>
+								</div>
+							)}
+
+							{/* Description (optional) */}
+							{pngMeta.wedgeData.description && (
+								<div className="wedge-field">
+									<h3>Description</h3>
+									<p>{pngMeta.wedgeData.description}</p>
+								</div>
+							)}
+
+							{pngMeta.wedgeData.injectedPrompt && (
+								<div className="wedge-field">
+									<h3>Injected Prompt</h3>
+									<p>{pngMeta.wedgeData.injectedPrompt}</p>
+								</div>
+							)}
+
+							{/* Full JSON dump + copy button */}
 							<div className="workflow-header">
 								<h3>Wedge Data JSON</h3>
 								<button

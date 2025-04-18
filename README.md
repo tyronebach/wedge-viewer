@@ -71,6 +71,8 @@ You can inject **one** JSON object into each PNG under the `tEXt` chunk `"wedged
 	"y_value": "upscale",
 	"z_value": 0.5,
 	"injectedPrompt": "a beautiful portrait",
+	"generate_time": "2.25",
+	"description": "wedge of loras and lora strengths",
 	"seed": 123456789
 }
 ```
