@@ -4,17 +4,17 @@
 	"description": "",
 	"main": "index.js",
 	"type": "module",
-  "private": true,
-  "workspaces": [
-    "server",
-    "client"
-  ],
+	"private": true,
+	"workspaces": [
+		"server",
+		"client"
+	],
 	"scripts": {
 		"dev": "concurrently \"npm:server\" \"npm:client\"",
 		"server": "nodemon server/index.js",
 		"client": "cd client && npm run dev",
 		"build": "cd client && npm run build",
-		"start": "node server/index.js"
+		"start": "node index.js"
 	},
 	"author": "",
 	"license": "ISC",
