@@ -1,0 +1,40 @@
+#controls {
+	position: fixed;
+	bottom: 6px;
+	left: 6px;
+	width: 364px;
+	padding: 10px;
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 8px;
+	z-index: 50; /* <— ensure it sits above the viewer */
+	display: flex;
+	flex-direction: column;
+	gap: 10px; /* space between each control */
+}
+
+.control-btn {
+	position: absolute;
+	top: 8px;
+	width: 24px;
+	height: 24px;
+	background: rgba(0, 0, 0, 0.5);
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.help-btn {
+	right: 40px;
+	font-weight: bold;
+}
+.help-btn:hover {
+	background-color: rgb(165, 0, 96);
+}
+.minimize-btn {
+	font-weight: bold;
+	right: 8px;
+}
+.minimize-btn:hover {
+	background-color: rgb(165, 0, 96);
+}

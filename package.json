@@ -1,0 +1,26 @@
+{
+	"name": "wedge_viewer",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+	"scripts": {
+		"dev": "concurrently \"npm:server\" \"npm:client\"",
+		"server": "nodemon server/index.js",
+		"client": "cd client && npm run dev",
+		"build": "cd client && npm run build",
+		"start": "node server/index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"concurrently": "^9.1.2",
+		"express": "^5.1.0",
+		"nodemon": "^3.1.9",
+		"sharp": "^0.34.1"
+	}
+}

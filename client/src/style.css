@@ -1,0 +1,39 @@
+/* src/style.css */
+/* Reset */
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* Background and default fonts */
+body {
+	font-family: Arial, sans-serif;
+	background: #303030;
+	color: aliceblue;
+}
+/* ─────────────────────────────────────────────────────────────── */
+
+#minimized-controls {
+	position: fixed;
+	bottom: 6px;
+	left: 6px;
+	z-index: 50; /* above the images */
+}
+
+.maximize-btn {
+	width: 64px;
+	height: 64px;
+	background: rgba(66, 66, 66, 0.7);
+	color: #fff;
+	border: 1px solid #000;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 24px;
+}
+
+.maximize-btn:hover {
+	background-color: rgb(165, 0, 96);
+}
