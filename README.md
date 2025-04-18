@@ -113,6 +113,7 @@ npm install
 # Then build and deploy the frontend (once)
 
 npm build
+
 npm deploy
 
 # Start the server
