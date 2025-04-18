@@ -1,5 +1,6 @@
 // src/components/OverlayWithMeta.jsx
 import React, { useState } from 'react';
+import { FaInfo } from 'react-icons/fa';
 import './OverlayWithMeta.css';
 
 export default function OverlayWithMeta({ overlayItems, pngMeta }) {
@@ -15,7 +16,7 @@ export default function OverlayWithMeta({ overlayItems, pngMeta }) {
 				))}
 				{pngMeta && (
 					<button className="meta-toggle" onClick={() => setShowMeta((v) => !v)} aria-label={showMeta ? 'Hide image info' : 'Show image info'}>
-						ℹ️
+						<FaInfo />
 					</button>
 				)}
 			</div>

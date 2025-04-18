@@ -4,6 +4,8 @@
 	left: 6px;
 	width: 364px;
 	padding: 10px;
+	padding-top: 24px;
+	padding-bottom: 24px;
 	background: rgba(66, 66, 66, 0.7);
 	border: 1px solid #000;
 	border-radius: 8px;
@@ -15,26 +17,58 @@
 
 .control-btn {
 	position: absolute;
-	top: 8px;
-	width: 24px;
-	height: 24px;
-	background: rgba(0, 0, 0, 0.5);
+	top: 10px;
+	width: 28px;
+	height: 28px;
+	background: rgba(0, 0, 0, 0.3);
 	color: #fff;
 	border: none;
 	border-radius: 4px;
 	cursor: pointer;
 }
 .help-btn {
-	right: 40px;
-	font-weight: bold;
+	color: greenyellow;
+	right: 42px;
 }
 .help-btn:hover {
 	background-color: rgb(165, 0, 96);
+	color: #fff;
 }
 .minimize-btn {
-	font-weight: bold;
-	right: 8px;
+	right: 10px;
+	color: greenyellow;
 }
 .minimize-btn:hover {
 	background-color: rgb(165, 0, 96);
+	color: #fff;
+}
+
+.folder-selector {
+	width: 100%;
+	height: 28px;
+	background: rgba(0, 0, 0, 0.3);
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: medium;
+	padding: 2px;
+	margin-bottom: 10px;
+}
+
+.folder-selector option {
+	background-color: #444;
+	color: #fff;
+	padding: 4px;
+}
+
+.folder-selector__label {
+	margin-bottom: 0px;
+	font-size: small;
+	font-weight: bold;
+}
+
+.range-slider__label {
+	font-size: small;
+	font-weight: bold;
 }

@@ -1,11 +1,11 @@
 // src/App.jsx
 import { useEffect, useState, useCallback, useRef } from 'react';
-import FolderSelector from './components/FolderSelector';
-import RangeSlider from './components/RangeSlider';
 import ImageViewer from './components/ImageViewer';
 import './style.css';
 import HelpModal from './components/HelpModal';
 import ControlsPanel from './components/ControlsPanel';
+import WedgeMap from './components/WedgeMap';
+import { FaRegWindowRestore } from 'react-icons/fa';
 
 const pad = (n) => n.toString().padStart(5, '0');
 
@@ -279,11 +279,12 @@ export default function App() {
 			) : (
 				<div id="minimized-controls">
 					<button className="maximize-btn" onClick={() => setMinimized(false)}>
-						☰
+						<FaRegWindowRestore size={18} />
 					</button>
 				</div>
 			)}
 			<ImageViewer before={srcs.before} selected={srcs.selected} after={srcs.after} overlayItems={overlayItems} pngMeta={pngMeta} />
+			<WedgeMap stats={stats} x={x} xMin={xMin} y={y} z={z} />
 		</div>
 	);
 }

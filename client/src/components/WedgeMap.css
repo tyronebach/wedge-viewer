@@ -1,0 +1,86 @@
+/* ─── WRAPPER & TOGGLE ───────────────────────────────── */
+.wedge-map-wrapper {
+	position: fixed;
+	bottom: 6px;
+	right: 6px;
+	display: flex;
+	align-items: end;
+	gap: 6px;
+	pointer-events: none;
+	z-index: 50;
+}
+
+.wedge-map-toggle {
+	pointer-events: auto; /* allow clicking */
+	width: 48px;
+	height: 48px;
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 4px;
+	color: #fff;
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	cursor: pointer;
+}
+.wedge-map-toggle:hover {
+	background-color: rgb(165, 0, 96);
+}
+
+/* ─── FLAT (1D/2D) MAP ──────────────────────────────── */
+.wedge-map {
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 8px;
+	padding: 8px;
+	pointer-events: none;
+	max-width: 300px; /* for 1D scroll */
+}
+
+/* ─── 3D CONTAINER ─────────────────────────────────── */
+.wedge-map-3d-container {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	gap: 6px;
+	pointer-events: none;
+}
+
+/* ─── Z‑BAR ───────────────────────────────────────── */
+.wedge-map-z {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+/* ─── 3D GRID ─────────────────────────────────────── */
+.wedge-map-grid {
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+/* ─── helper for layout ───────────────────────────── */
+.grid-2d {
+	display: grid;
+}
+
+/* ─── CELLS ────────────────────────────────────────── */
+.wedge-map__cell {
+	width: 16px;
+	height: 16px;
+	background: rgba(200, 200, 200, 0.4);
+	border-radius: 2px;
+}
+
+.wedge-map__cell.active {
+	background: #0f0;
+	box-shadow: 0 0 4px #0f0;
+}

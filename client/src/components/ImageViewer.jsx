@@ -4,7 +4,7 @@ import OverlayWithMeta from './OverlayWithMeta';
 import './ImageViewer.css';
 
 export default function ImageViewer({ before, selected, after, overlayItems, pngMeta }) {
-	if (!selected) return <div id="imageContainer">Loading…</div>;
+	if (!selected) return <div id="imageContainer">no images ...</div>;
 
 	return (
 		<div id="imageContainer">
