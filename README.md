@@ -190,6 +190,6 @@ Download and run the official installer from https://nodejs.org
 
 # License
 
-MIT © binktogether
+MIT © tyrone
 
 Feel free to tweak paths, ports or script names to suit your setup. Once you push this and run `npm run dev`, both server and client will come up and serve your “wedges” of images automatically.
