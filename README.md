@@ -108,21 +108,28 @@ Note: you can inject any other data as well—just extend the object.
 
 # Install dependencies (once)
 
+```
 npm install
+```
 
 # Then build and deploy the frontend (once)
 
+```
 npm build
-
 npm deploy
+```
 
 # Start the server
 
+```
 npm start
+```
 
 # Or Start both server and client in dev mode
 
+```
 npm run dev
+```
 
 This will:
 
