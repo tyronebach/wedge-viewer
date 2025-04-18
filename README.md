@@ -8,7 +8,7 @@ Images are laid out along the **X** axis (side‑by‑side), and you can step th
 
 http://34.30.161.139/
 
-- page up down to cycle through folders
+- page up down to cycle through folders (since its over network the images need time to load)
 - keyboard shortcuts: up, down, left, right, home, end (click the help button)
 
 ## Features
