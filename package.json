@@ -14,6 +14,7 @@
 		"server": "nodemon server/index.js",
 		"client": "cd client && npm run dev",
 		"build": "cd client && npm run build",
+		"deploy": "cp -r client/dist/* public/",
 		"start": "node index.js"
 	},
 	"author": "",

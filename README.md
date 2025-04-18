@@ -103,7 +103,13 @@ Note: you can inject any other data as well—just extend the object.
 
 npm install
 
-# Start both server and client in dev mode
+# Then Build the frontend and Start the server
+
+npm build
+npm deploy
+npm start
+
+# Or Start both server and client in dev mode
 
 npm run dev
 
