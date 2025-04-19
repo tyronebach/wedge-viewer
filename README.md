@@ -8,8 +8,37 @@ Images are laid out along the **X** axis (side‑by‑side), and you can step th
 
 https://wedge-viewer.onrender.com/
 
-- page up down to cycle through folders (since its over network the images need time to load)
-- keyboard shortcuts: up, down, left, right, home, end (click the help button)
+- does not work on mobile
+- free hosting, so the images are slow to load
+- page up down to cycle through folders - keyboard shortcuts: up, down, left, right, home, end (click the help button)
+
+# Install dependencies (once)
+
+```
+npm install
+```
+
+node js needs to be installed before hand, see Prerequisites for info.
+
+# Start the server
+
+```
+npm start
+```
+
+that's it, click the address printed in the terminal. Place image folders inside public/images . live updated
+
+# Or Start both server and client in dev mode (advance)
+
+```
+npm run dev
+```
+
+This will:
+
+Launch the Express server on http://localhost:3080
+
+Launch Vite/React frontend on http://localhost:5173 (proxying /api & /images back to Express)
 
 ## Features
 
@@ -101,31 +130,6 @@ export function embedJsonMeta(filePath, jsonObject) {
 ```
 
 Note: you can inject any other data as well—just extend the object.
-
-# Install dependencies (once)
-
-```
-npm install
-```
-
-# Start the server
-
-```
-npm start
-```
-that's it, click the address printed in the terminal. Place image folders inside public/images . live updated 
-
-# Or Start both server and client in dev mode
-
-```
-npm run dev
-```
-
-This will:
-
-Launch the Express server on http://localhost:3080
-
-Launch Vite/React frontend on http://localhost:5173 (proxying /api & /images back to Express)
 
 # API Endpoints
 

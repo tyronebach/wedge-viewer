@@ -49,13 +49,6 @@ export default function OverlayWithMeta({ overlayItems, pngMeta }) {
 								</div>
 							)}
 
-							{pngMeta.wedgeData.injectedPrompt && (
-								<div className="wedge-field">
-									<h3>Injected Prompt</h3>
-									<p>{pngMeta.wedgeData.injectedPrompt}</p>
-								</div>
-							)}
-
 							{/* Full JSON dump + copy button */}
 							<div className="workflow-header">
 								<h3>Wedge Data JSON</h3>

@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useEffect, useState, useCallback, useRef } from 'react';
 import ControlsPanel from './components/ControlsPanel';
 import HelpModal from './components/HelpModal';
@@ -9,7 +10,7 @@ import './style.css';
 const pad = (n) => n.toString().padStart(5, '0');
 
 export default function App() {
-	// ─── State ─────────────────────────────────────────────────
+	// ─── state ───────────────────────────────────────────────────────
 	const [folders, setFolders] = useState([]);
 	const [current, setCurrent] = useState('');
 
@@ -29,7 +30,7 @@ export default function App() {
 	const [pngMeta, setPngMeta] = useState(null);
 	const lastMetaRequest = useRef({ folder: null, filename: null });
 
-	// ─── 1) Load folder list ───────────────────────────────────────
+	// ─── 1) load folders ──────────────────────────────────────────────
 	useEffect(() => {
 		fetch('/api/folders')
 			.then((r) => r.json())
@@ -40,18 +41,18 @@ export default function App() {
 			.catch(console.error);
 	}, []);
 
-	// ─── 2) Folder change ─────────────────────────────────────────
+	// ─── 2) folder changes ────────────────────────────────────────────
 	useEffect(() => {
 		if (!current) return;
 
-		// clear everything
+		// clear everything out immediately
 		setStats(null);
 		setMapping({});
 		setPngMeta(null);
 		setSrcs({ before: '', selected: '', after: '' });
 		lastMetaRequest.current = { folder: null, filename: null };
 
-		// fetch stats
+		// fetch new stats
 		fetch(`/api/folderStats?folder=${current}`)
 			.then((r) => r.json())
 			.then((s) => {
@@ -64,7 +65,7 @@ export default function App() {
 			.catch(console.error);
 	}, [current]);
 
-	// ─── 3) File mapping ──────────────────────────────────────────
+	// ─── 3) build file‐map ────────────────────────────────────────────
 	useEffect(() => {
 		if (!current || !stats) return;
 
@@ -96,7 +97,7 @@ export default function App() {
 			.catch(console.error);
 	}, [current, stats]);
 
-	// ─── 4) Compute before/selected/after ─────────────────────────
+	// ─── 4) compute before/selected/after ─────────────────────────────
 	const updateSrcs = useCallback(() => {
 		if (!stats) {
 			setSrcs({ before: '', selected: '', after: '' });
@@ -120,7 +121,7 @@ export default function App() {
 			aftKey = pad(actualX + 1);
 		}
 
-		// if the selected key isn’t in our map, clear out
+		// **NEW**: if the new key isn't in mapping, _clear_ srcs (don't leave stale URLs)
 		if (!mapping[selKey]) {
 			setSrcs({ before: '', selected: '', after: '' });
 			return;
@@ -133,10 +134,9 @@ export default function App() {
 			after: mapping[aftKey] ? `${base}/${mapping[aftKey]}` : `${base}/${mapping[selKey]}`,
 		});
 	}, [x, y, z, xMin, mapping, stats, current]);
-
 	useEffect(updateSrcs, [updateSrcs]);
 
-	// ─── 5) Fetch image‑level metadata ────────────────────────────
+	// ─── 5) fetch PNG meta ────────────────────────────────────────────
 	useEffect(() => {
 		if (!srcs.selected) {
 			setPngMeta(null);
@@ -153,7 +153,7 @@ export default function App() {
 
 			fetch(`/api/imageMeta?folder=${folder}&filename=${filename}`)
 				.then((r) => {
-					if (r.status === 404) return {};
+					if (r.status === 404) return {}; // missing metadata is fine
 					if (!r.ok) throw new Error(r.status);
 					return r.json();
 				})
@@ -164,11 +164,12 @@ export default function App() {
 		}
 	}, [srcs.selected]);
 
-	// ─── 6) Keyboard navigation ────────────────────────────────────
+	// ─── 6) keyboard nav ───────────────────────────────────────────────
 	useEffect(() => {
 		const onKey = (e) => {
 			if (!stats) return;
 			let handled = false;
+
 			switch (e.key) {
 				// Y: ↑↓ or W/S
 				case 'ArrowUp':
@@ -185,6 +186,7 @@ export default function App() {
 						handled = true;
 					}
 					break;
+
 				// X: ←→ or A/D
 				case 'ArrowRight':
 				case 'd':
@@ -196,6 +198,7 @@ export default function App() {
 					setX((v) => Math.max(v - 1, 1));
 					handled = true;
 					break;
+
 				// Z: Home/End or Q/E
 				case 'Home':
 				case 'e':
@@ -211,31 +214,33 @@ export default function App() {
 						handled = true;
 					}
 					break;
-				// folders: PgUp/PgDn
+
+				// folder nav: PgUp/PgDn
 				case 'PageUp':
-					setCurrent((_, i = folders.findIndex((f) => f === current)) => folders[Math.max(i - 1, 0)]);
+					setCurrent((_, i = folders.indexOf(current)) => folders[Math.max(i - 1, 0)]);
 					handled = true;
 					break;
 				case 'PageDown':
-					setCurrent((_, i = folders.findIndex((f) => f === current)) => folders[Math.min(i + 1, folders.length - 1)]);
+					setCurrent((_, i = folders.indexOf(current)) => folders[Math.min(i + 1, folders.length - 1)]);
 					handled = true;
 					break;
 			}
+
 			if (handled) e.preventDefault();
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
 	}, [stats, folders, current]);
 
-	// ─── Overlay items ────────────────────────────────────────────
+	// ─── overlay items ───────────────────────────────────────────────
 	const overlayItems = [];
-	['x', 'y', 'z'].forEach((dim) => {
-		if (!stats?.[dim]) return;
+	for (let dim of ['x', 'y', 'z']) {
+		if (!stats?.[dim]) continue;
 		const label = pngMeta?.wedgeData?.[`${dim}_label`] ?? dim.toUpperCase();
 		const fallback = dim === 'x' ? x : dim === 'y' ? y : z;
 		const value = pngMeta?.wedgeData?.[`${dim}_value`] ?? fallback;
 		overlayItems.push({ label, value });
-	});
+	}
 
 	const xLabel = pngMeta?.wedgeData?.x_label ?? 'X';
 	const yLabel = pngMeta?.wedgeData?.y_label ?? 'Y';
@@ -245,7 +250,7 @@ export default function App() {
 	const yValue = pngMeta?.wedgeData?.y_value ?? y;
 	const zValue = pngMeta?.wedgeData?.z_value ?? z;
 
-	// ─── Render ─────────────────────────────────────────────────
+	// ─── render ──────────────────────────────────────────────────────
 	return (
 		<div className="container">
 			{showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
