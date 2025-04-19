@@ -4,6 +4,7 @@ import ControlsPanel from './components/ControlsPanel';
 import HelpModal from './components/HelpModal';
 import ImageViewer from './components/ImageViewer';
 import WedgeMap from './components/WedgeMap';
+// import WedgeMap3D from './components/WedgeMap3D';
 import { FaRegWindowRestore } from 'react-icons/fa';
 import './style.css';
 
@@ -279,13 +280,14 @@ export default function App() {
 			) : (
 				<div id="minimized-controls">
 					<button className="maximize-btn" onClick={() => setMinimized(false)}>
-						<FaRegWindowRestore size={18} />
+						<FaRegWindowRestore size={14} />
 					</button>
 				</div>
 			)}
 
 			<ImageViewer before={srcs.before} selected={srcs.selected} after={srcs.after} overlayItems={overlayItems} pngMeta={pngMeta} />
 			<WedgeMap stats={stats} x={x} xMin={xMin} y={y} z={z} />
+			{/* <WedgeMap3D stats={stats} x={x} xMin={xMin} y={y} z={z} /> */}
 		</div>
 	);
 }

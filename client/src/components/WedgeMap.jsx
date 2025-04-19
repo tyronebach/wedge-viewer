@@ -66,9 +66,9 @@ export default function WedgeMap({ stats, x, xMin, y, z }) {
 						<div
 							className="wedge-map-grid grid-2d"
 							style={{
-								gridTemplateColumns: `repeat(${countX}, 16px)`,
-								gridTemplateRows: `repeat(${countY}, 16px)`,
-								gap: '4px',
+								gridTemplateColumns: `repeat(${countX}, minmax(8px, 1fr))`,
+								gridTemplateRows: `repeat(${countY}, minmax(8px, 1fr))`,
+								gap: '2px',
 							}}
 						>
 							{gridCells}
@@ -84,8 +84,8 @@ export default function WedgeMap({ stats, x, xMin, y, z }) {
 	const containerStyle = hasY
 		? {
 				display: 'grid',
-				gridTemplateColumns: `repeat(${countX}, 16px)`,
-				gridTemplateRows: `repeat(${countY}, 16px)`,
+				gridTemplateColumns: `repeat(${countX}, minmax(8px, 1fr))`,
+				gridTemplateRows: `repeat(${countY}, minmax(8px, 1fr))`,
 				gap: '4px',
 		  }
 		: {

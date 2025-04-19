@@ -1,6 +1,7 @@
 // src/components/HelpModal.jsx
 import React from 'react';
 import './HelpModal.css';
+import { FaInfo } from 'react-icons/fa';
 
 export default function HelpModal({ onClose }) {
 	return (
@@ -51,7 +52,11 @@ export default function HelpModal({ onClose }) {
 				<p>Or just drag the sliders in the controls panel to change each dimension.</p>
 
 				<p>
-					Click the <span aria-label="info">ℹ️</span> button in the top‑right of the image to toggle per‑image metadata (embedded prompt, wedge data, etc.).
+					Click the{' '}
+					<span className="meta-toggle">
+						<FaInfo />
+					</span>{' '}
+					button in the top‑right of the image to toggle per‑image metadata (embedded prompt, wedge data, etc.).
 				</p>
 
 				<button className="close-help" onClick={onClose}>

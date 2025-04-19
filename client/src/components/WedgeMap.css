@@ -5,15 +5,15 @@
 	right: 6px;
 	display: flex;
 	align-items: end;
-	gap: 6px;
+	gap: 2px;
 	pointer-events: none;
 	z-index: 50;
 }
 
 .wedge-map-toggle {
 	pointer-events: auto; /* allow clicking */
-	width: 48px;
-	height: 48px;
+	width: 32px;
+	height: 32px;
 	background: rgba(66, 66, 66, 0.7);
 	border: 1px solid #000;
 	border-radius: 4px;
@@ -33,10 +33,10 @@
 .wedge-map {
 	background: rgba(66, 66, 66, 0.7);
 	border: 1px solid #000;
-	border-radius: 8px;
-	padding: 8px;
+	border-radius: 4px;
+	padding: 4px;
 	pointer-events: none;
-	max-width: 300px; /* for 1D scroll */
+	max-width: 364px; /* for 1D scroll */
 }
 
 /* ─── 3D CONTAINER ─────────────────────────────────── */
@@ -44,26 +44,29 @@
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
-	gap: 6px;
+	gap: 2px;
 	pointer-events: none;
-}
-
-/* ─── Z‑BAR ───────────────────────────────────────── */
-.wedge-map-z {
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-	background: rgba(66, 66, 66, 0.7);
-	border: 1px solid #000;
-	border-radius: 8px;
-	padding: 8px;
+	max-width: 400px; /* Adjust this value as needed */
 }
 
 /* ─── 3D GRID ─────────────────────────────────────── */
 .wedge-map-grid {
 	background: rgba(66, 66, 66, 0.7);
 	border: 1px solid #000;
-	border-radius: 8px;
+	border-radius: 4px;
+	padding: 8px;
+	display: grid;
+	gap: 2px;
+}
+
+/* ─── Z‑BAR ───────────────────────────────────────── */
+.wedge-map-z {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	background: rgba(66, 66, 66, 0.7);
+	border: 1px solid #000;
+	border-radius: 4px;
 	padding: 8px;
 }
 
@@ -74,8 +77,8 @@
 
 /* ─── CELLS ────────────────────────────────────────── */
 .wedge-map__cell {
-	width: 16px;
-	height: 16px;
+	width: 8px;
+	height: 8px;
 	background: rgba(200, 200, 200, 0.4);
 	border-radius: 2px;
 }

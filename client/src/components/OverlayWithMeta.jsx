@@ -31,8 +31,6 @@ export default function OverlayWithMeta({ overlayItems, pngMeta }) {
 					{/* if wedgeData exists */}
 					{pngMeta.wedgeData && (
 						<div className="wedge-data-section">
-							{/* Injected Prompt (optional) */}
-
 							{/* Generation Time (optional) */}
 							{pngMeta.wedgeData.generate_time && (
 								<div className="wedge-field">
@@ -46,6 +44,14 @@ export default function OverlayWithMeta({ overlayItems, pngMeta }) {
 								<div className="wedge-field">
 									<h3>Description</h3>
 									<p>{pngMeta.wedgeData.description}</p>
+								</div>
+							)}
+
+							{/* Injected Prompt (optional) */}
+							{pngMeta.wedgeData.injectedPrompt && (
+								<div className="wedge-field">
+									<h3>Injected Prompt</h3>
+									<p>{pngMeta.wedgeData.injectedPrompt}</p>
 								</div>
 							)}
 
